@@ -65,7 +65,7 @@ public class Parser {
 		ArrayList<String> stopWord = new ArrayList<String>();
 		String result = corpus.toLowerCase();
 		ArrayList<String> matches = new ArrayList<String>();
-		Matcher m = Pattern.compile("(([a-z0-9éèêîïçëà]*))").matcher(result);
+		Matcher m = Pattern.compile("(([a-z0-9éèêîïçëàôöûüâäñ]*))").matcher(result);
 		while(m.find()){
 			if(!STOP_WORDS.contains(m.group(1))){
 				if(m.group(1).length()>0){
@@ -81,8 +81,31 @@ public class Parser {
 		return matches;
 	}
 	
+	public static ArrayList<String> parser(String path){
+		File file = new File(path);
+			ArrayList<String> result = new ArrayList<String>(); 
+			Document doc;
+			try {
+				doc = Jsoup.parse(file,"UTF8");
+				Element e  = doc.select("body").first();
+				ArrayList<String> corpus = new ArrayList<String>();
+				parcourRecursif(e, corpus);
+				String corpusStr = "";
+				for(String mot : corpus){
+					corpusStr += mot+" ";
+				}
+				//System.out.println(corpusStr);
+
+				return filter(corpusStr);
+
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			return result;
+	}
 	public static void main(String[] args){
-		File file = new File("CORPUS/D1.html");
+		File file = new File("CORPUS/D2.html");
 		try {
 			ArrayList<String> result = new ArrayList<String>(); 
 			Document doc = Jsoup.parse(file,"UTF8");
